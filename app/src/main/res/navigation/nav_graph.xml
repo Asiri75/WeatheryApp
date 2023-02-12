@@ -17,9 +17,9 @@
     </fragment>
     <fragment
         android:id="@+id/CityWeatherFragment"
-        android:name="com.libertytech.weatheryapp.SecondFragment"
+        android:name="com.libertytech.weatheryapp.ui.cityweather.CityWeatherFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_city_weather">
         <argument
             android:name="city"
             app:argType="com.libertytech.weatheryapp.model.City" />

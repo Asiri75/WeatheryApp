@@ -6,6 +6,11 @@
     <string name="second_fragment_label">Météo de la ville</string>
     <string name="previous">Previous</string>
 
+    <string name="wind">%1$s km/h</string>
+    <string name="temp">%1$s °C</string>
+
+
+
     <string name="no_city_message">Aucune ville, cliquez sur le bouton plus pour en ajouter</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
