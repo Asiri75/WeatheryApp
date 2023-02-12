@@ -14,4 +14,6 @@ class CityRepository @Inject constructor(private val cityDao: CityDao) {
                 lng = lng
             )
         )
+
+    fun getAllCities() = cityDao.getAllCities()
 }
