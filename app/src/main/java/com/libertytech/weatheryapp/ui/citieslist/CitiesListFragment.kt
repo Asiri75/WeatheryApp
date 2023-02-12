@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,6 +21,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.libertytech.weatheryapp.BuildConfig
 import com.libertytech.weatheryapp.R
 import com.libertytech.weatheryapp.databinding.FragmentCitiesListBinding
+import com.libertytech.weatheryapp.model.City
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -65,19 +67,18 @@ class CitiesListFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let {
                 Autocomplete.getPlaceFromIntent(it).let { place ->
-                    if (place.name != null
-                        && place.latLng?.latitude != null
-                        && place.latLng?.longitude != null
-                    ) {
-                        viewModel.saveCity(
-                            name = place.name,
-                            lat = place.latLng.latitude,
-                            lng = place.latLng.longitude
-                        )
+                    place.toCity()?.let { city ->
+                        viewModel.saveCity(city)
+                        goToCityWeather(city)
                     }
                 }
             }
         }
+    }
+
+    private fun goToCityWeather(city: City) {
+        val bundle = bundleOf("city" to city)
+        findNavController().navigate(R.id.action_CitiesListFragment_to_CityWeatherFragment, bundle)
     }
 
     private fun observeCitiesState() {
@@ -98,8 +99,8 @@ class CitiesListFragment : Fragment() {
     }
 
     private fun initUi() {
-        citiesAdapter = CityListAdapter {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        citiesAdapter = CityListAdapter { citySelected ->
+            goToCityWeather(citySelected)
         }
         binding.citiesRecyclerview.adapter = citiesAdapter
         binding.addCityButton.setOnClickListener {
@@ -122,3 +123,13 @@ class CitiesListFragment : Fragment() {
         _binding = null
     }
 }
+
+private fun Place.toCity(): City? =
+    if (this.name != null && this.latLng?.latitude != null && this.latLng?.longitude != null) {
+        City(
+            name = this.name,
+            lat = this.latLng.latitude,
+            lng = this.latLng.longitude
+        )
+    } else null
+

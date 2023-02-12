@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.libertytech.core.data.local.model.CityEntity
+import com.libertytech.weatheryapp.model.City
 
 class CityListAdapter(
-    private val cityClickListener: ((Any) -> Unit)
+    private val cityClickListener: ((City) -> Unit)
 ) : RecyclerView.Adapter<CityListAdapter.CityViewHolder>() {
 
-    private var cities = emptyList<CityEntity>()
+    private var cities = emptyList<City>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
         return CityViewHolder(
@@ -28,17 +28,17 @@ class CityListAdapter(
         return cities.size
     }
 
-    fun updateData(cities: List<CityEntity>) {
+    fun updateData(cities: List<City>) {
         this.cities = cities
         notifyDataSetChanged()
     }
 
     class CityViewHolder(
         view: View,
-        private val cityClickListener: (CityEntity) -> Unit
+        private val cityClickListener: (City) -> Unit
     ) : RecyclerView.ViewHolder(view) {
         private val textView: TextView = view as TextView
-        private var city: CityEntity? = null
+        private var city: City? = null
 
         init {
             view.setOnClickListener {
@@ -48,7 +48,7 @@ class CityListAdapter(
             }
         }
 
-        fun onBind(city: CityEntity) {
+        fun onBind(city: City) {
             this.city = city
             textView.text = city.name
         }

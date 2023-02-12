@@ -3,14 +3,15 @@ package com.libertytech.weatheryapp.ui.citieslist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.libertytech.core.data.local.model.CityEntity
 import com.libertytech.core.domain.usecase.GetCitiesListUseCase
 import com.libertytech.core.domain.usecase.StoreCityUseCase
+import com.libertytech.weatheryapp.model.City
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,8 +33,10 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
                 .onStart {
                     cityMState.value = CityListState.IsLoading(isLoading = true)
                 }
+                .map {
+                    it.map { cityEntity -> City(cityEntity.name, cityEntity.lat, cityEntity.lng) }
+                }
                 .collect { cities ->
-                    Log.d("ANNAS", "Got $cities")
                     cityMState.value = CityListState.IsLoading(isLoading = false)
                     if (cities.isEmpty()) {
                         cityMState.value = CityListState.EmptyList
@@ -44,9 +47,9 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
         }
     }
 
-    fun saveCity(name: String, lat: Double, lng: Double) {
+    fun saveCity(city: City) {
         CoroutineScope(Dispatchers.IO).launch {
-            useCases.storeCityUseCase.invoke(name, lat, lng)
+            useCases.storeCityUseCase.invoke(city.name, city.lat, city.lng)
         }
     }
 }
@@ -55,5 +58,5 @@ sealed class CityListState {
     object Init : CityListState()
     data class IsLoading(val isLoading: Boolean) : CityListState()
     object EmptyList : CityListState()
-    data class SuccessCollect(val cities: List<CityEntity>) : CityListState()
+    data class SuccessCollect(val cities: List<City>) : CityListState()
 }
