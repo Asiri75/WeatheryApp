@@ -1,11 +1,14 @@
 package com.libertytech.weatheryapp.ui.citieslist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.libertytech.core.data.local.model.CityEntity
 import com.libertytech.core.domain.usecase.GetCitiesListUseCase
 import com.libertytech.core.domain.usecase.StoreCityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
@@ -27,9 +30,11 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
         viewModelScope.launch {
             useCases.getCitiesListUseCase.invoke()
                 .onStart {
-                    cityMState.value = CityListState.IsLoading
+                    cityMState.value = CityListState.IsLoading(isLoading = true)
                 }
                 .collect { cities ->
+                    Log.d("ANNAS", "Got $cities")
+                    cityMState.value = CityListState.IsLoading(isLoading = false)
                     if (cities.isEmpty()) {
                         cityMState.value = CityListState.EmptyList
                     } else {
@@ -38,11 +43,17 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
                 }
         }
     }
+
+    fun saveCity(name: String, lat: Double, lng: Double) {
+        CoroutineScope(Dispatchers.IO).launch {
+            useCases.storeCityUseCase.invoke(name, lat, lng)
+        }
+    }
 }
 
 sealed class CityListState {
     object Init : CityListState()
-    object IsLoading : CityListState()
+    data class IsLoading(val isLoading: Boolean) : CityListState()
     object EmptyList : CityListState()
     data class SuccessCollect(val cities: List<CityEntity>) : CityListState()
 }

@@ -2,9 +2,8 @@
     <string name="app_name">Weathery App</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
+    <string name="first_fragment_label">Weathery App</string>
+    <string name="second_fragment_label">Météo de la ville</string>
     <string name="previous">Previous</string>
 
     <string name="no_city_message">Aucune ville, cliquez sur le bouton plus pour en ajouter</string>
