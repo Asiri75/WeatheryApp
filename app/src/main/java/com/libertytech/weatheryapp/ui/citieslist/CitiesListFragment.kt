@@ -109,7 +109,7 @@ class CitiesListFragment : Fragment() {
     }
 
     private fun launchCitySearch() {
-        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
+        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
         activity?.let {
             citySearchResultListener.launch(
                 Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
@@ -127,6 +127,7 @@ class CitiesListFragment : Fragment() {
 private fun Place.toCity(): City? =
     if (this.name != null && this.latLng?.latitude != null && this.latLng?.longitude != null) {
         City(
+            id = this.id,
             name = this.name,
             lat = this.latLng.latitude,
             lng = this.latLng.longitude

@@ -6,9 +6,10 @@ import javax.inject.Inject
 
 class CityRepository @Inject constructor(private val cityDao: CityDao) {
 
-    suspend fun addCity(name: String, lat: Double, lng: Double) =
+    suspend fun addCity(id: String, name: String, lat: Double, lng: Double) =
         cityDao.insertCity(
             CityEntity(
+                id = id,
                 name = name,
                 lat = lat,
                 lng = lng

@@ -34,7 +34,7 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
                     cityMState.value = CityListState.IsLoading(isLoading = true)
                 }
                 .map {
-                    it.map { cityEntity -> City(cityEntity.name, cityEntity.lat, cityEntity.lng) }
+                    it.map { cityEntity -> City(cityEntity.id, cityEntity.name, cityEntity.lat, cityEntity.lng) }
                 }
                 .collect { cities ->
                     cityMState.value = CityListState.IsLoading(isLoading = false)
@@ -49,7 +49,7 @@ class CitiesViewModel @Inject constructor(private val useCases: UseCases) : View
 
     fun saveCity(city: City) {
         CoroutineScope(Dispatchers.IO).launch {
-            useCases.storeCityUseCase.invoke(city.name, city.lat, city.lng)
+            useCases.storeCityUseCase.invoke(city.id, city.name, city.lat, city.lng)
         }
     }
 }

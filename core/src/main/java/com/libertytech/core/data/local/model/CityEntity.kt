@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "city")
 data class CityEntity(
+    @PrimaryKey
+    var id: String,
     val name: String,
     val lat: Double,
     val lng: Double
 ) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
 }
